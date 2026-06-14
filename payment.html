@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>M-Pesa Payment</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Outfit:wght@400;500;600;700&display=swap');
+    :root {
+      --black: #0b0a0d;
+      --gold: #e3b94c;
+      --gold-light: #f3d98a;
+      --gold-deep: #b8862e;
+      --purple: #6e2f8e;
+      --purple-deep: #3f1856;
+      --cream: #f8f4ec;
+      --mpesa-green: #1fd042;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: radial-gradient(ellipse at top right, rgba(227,185,76,0.18), transparent 55%),
+                  radial-gradient(ellipse at bottom left, rgba(110,47,142,0.35), transparent 55%),
+                  var(--black);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+    .receipt-card {
+      background: #1f1c26;
+      border: 1px solid rgba(227,185,76,0.2);
+      padding: 30px 32px;
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+      color: #efe9f4;
+    }
+    .receipt-card h2 {
+      font-family: 'Playfair Display', serif;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold) 50%, var(--gold-deep));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 14px;
+    }
+    .receipt-details {
+      text-align: left;
+      margin-bottom: 20px;
+      border-top: 1px dashed rgba(227,185,76,0.3);
+      border-bottom: 1px dashed rgba(227,185,76,0.3);
+      padding: 18px 0;
+    }
+    
+    /* Form Input Group Styling */
+    .input-group {
+      margin-bottom: 15px;
+    }
+    .input-group label {
+      display: block;
+      font-size: 14px;
+      color: var(--gold-light);
+      margin-bottom: 6px;
+      font-weight: 500;
+      text-align: left;
+    }
+    .input-field {
+      width: 100%;
+      background: #131117;
+      border: 1px solid rgba(227,185,76,0.3);
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .input-field:focus {
+      border-color: var(--mpesa-green);
+      box-shadow: 0 0 8px rgba(31, 208, 66, 0.2);
+    }
+    
+    .btn-mpesa {
+      width: 100%;
+      background: var(--mpesa-green) !important;
+      color: #fff !important;
+      font-weight: 700;
+      margin-top: 10px;
+      padding: 14px;
+      border-radius: 10px !important;
+      font-size: 16px !important;
+    }
+    .btn-mpesa:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(31, 208, 66, 0.4) !important;
+    }
+
+    .note {
+      background: rgba(110,47,142,0.18);
+      color: var(--gold-light);
+      border: 1px solid rgba(227,185,76,0.25);
+      padding: 12px 15px;
+      border-radius: 10px;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+    .btn-group {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+    .btn {
+      padding: 10px 20px;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold) 50%, var(--gold-deep));
+      color: var(--black);
+      border: none;
+      border-radius: 30px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(227,185,76,0.35);
+    }
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="receipt-card" id="receiptCard">
+    <h2>M-Pesa STK Push</h2>
+    
+    <div class="receipt-details">
+      <div class="input-group">
+        <label for="mpesaPhone">M-Pesa Phone Number</label>
+        <input 
+          type="tel" 
+          id="mpesaPhone" 
+          class="input-field" 
+          placeholder="e.g. 0712345678"
+        >
+      </div>
+
+      <div class="input-group">
+        <label for="mpesaAmount">Amount (KSh)</label>
+        <input 
+          type="number" 
+          id="mpesaAmount" 
+          class="input-field" 
+          placeholder="e.g. 1000" 
+          min="1"
+        >
+      </div>
+
+      <button class="btn btn-mpesa" id="mpesaBtn" onclick="triggerMpesaPush()">
+        Send M-Pesa Prompt
+      </button>
+    </div>
+
+    <div class="note">
+      Note: Ensure the phone is unlocked to receive the PIN request overlay.
+    </div>
+    
+    <div class="btn-group">
+      <button class="btn" onclick="copyToClipboard()">Copy Details</button>
+      <button class="btn" onclick="forwardToGmail()">Forward to Gmail</button>
+      <button class="btn" onclick="closeReceipt()">Close</button>
+    </div>
+  </div>
+
+  <script>
+    // Autofill initial values if they exist in sessionStorage
+    window.onload = function() {
+      const storedPhone = sessionStorage.getItem("phone");
+      const storedAmount = sessionStorage.getItem("amount");
+
+      if (storedPhone) document.getElementById("mpesaPhone").value = storedPhone;
+      if (storedAmount) document.getElementById("mpesaAmount").value = storedAmount;
+    };
+
+    function triggerMpesaPush() {
+      let phoneInput = document.getElementById("mpesaPhone").value.trim();
+      const amountInput = document.getElementById("mpesaAmount").value.trim();
+      const mpesaBtn = document.getElementById("mpesaBtn");
+
+      // 1. Validate Amount
+      if (!amountInput || parseFloat(amountInput) <= 0) {
+        alert("Please enter a valid amount greater than 0.");
+        return;
+      }
+
+      // 2. Normalize & Validate Kenyan Phone Numbers (Formats: 07..., 01..., 254...)
+      if (phoneInput.startsWith('+')) phoneInput = phoneInput.substring(1);
+      if (phoneInput.startsWith('0')) phoneInput = '254' + phoneInput.substring(1);
+      
+      const phoneRegex = /^(2547|2541)\d{8}$/;
+      if (!phoneRegex.test(phoneInput)) {
+        alert("Please enter a valid Safaricom phone number (e.g., 0712345678 or 0112345678).");
+        return;
+      }
+
+      // UI Loading State
+      mpesaBtn.disabled = true;
+      mpesaBtn.innerText = "Sending STK Push...";
+
+      // Update session storage details for clipboard/email functions
+      const date = new Date().toLocaleString();
+      const receiptText = `M-Pesa Payment Details\n\nDate: ${date}\nPhone: ${phoneInput}\nAmount: KSh ${amountInput}`;
+      sessionStorage.setItem("receipt", receiptText);
+
+      // 3. API Call to Backend Server 
+      // Replace with your real URL logic (e.g., Node.js/Python Daraja framework endpoint)
+      fetch('https://your-backend-api.com/mpesa/stkpush', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          phone: phoneInput,
+          amount: amountInput
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Checking Daraja response standards (ResponseCode "0" means success)
+        if (data.ResponseCode === "0" || data.success) {
+          alert("🚀 STK Push sent successfully! Check your phone to enter your M-Pesa PIN.");
+        } else {
+          alert("Failed to send prompt: " + (data.CustomerMessage || "Unknown API Error"));
+        }
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        alert("Network error: Could not reach the backend payment processor.");
+      })
+      .finally(() => {
+        mpesaBtn.disabled = false;
+        mpesaBtn.innerText = "Send M-Pesa Prompt";
+      });
+    }
+
+    function copyToClipboard() {
+      const receiptText = sessionStorage.getItem("receipt") || "No transaction details generated yet.";
+      navigator.clipboard.writeText(receiptText).then(() => {
+        alert("Payment text copied to clipboard!");
+      });
+    }
+
+    function forwardToGmail() {
+      const receiptText = encodeURIComponent(sessionStorage.getItem("receipt") || "No details");
+      const subject = encodeURIComponent("M-Pesa Payment Request");
+      const gmailURL = `https://mail.google.com/mail/?view=cm&fs=1&tf=1&su=${subject}&body=${receiptText}`;
+      window.open(gmailURL, "_blank");
+    }
+
+    function closeReceipt() {
+      window.location.href = "index.html";
+    }
+  </script>
+
+</body>
+</html>
