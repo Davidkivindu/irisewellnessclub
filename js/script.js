@@ -1,3 +1,6 @@
+// ===== JS available: remove no-js fallback class =====
+document.documentElement.classList.remove('no-js');
+
 // ===== Mobile menu toggle =====
 const check = document.getElementById('check');
 const navLinks = document.querySelectorAll('#menu .nav-links a');
